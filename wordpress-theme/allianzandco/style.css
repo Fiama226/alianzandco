@@ -1,0 +1,19 @@
+/*
+Theme Name: Allianz & Co
+Theme URI: https://alliance-co.net
+Author: Allianz & Co Agency
+Author URI: https://alliance-co.net
+Description: A professional, production-ready WordPress theme for Allianz & Co — an African engineering & construction company. Inspired by the Avelon visual system: bold typography, dark/orange accents, large hero sections, modular content blocks. No e-commerce / cart / pricing — corporate showcase only.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.6
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: allianzandco
+Tags: business, portfolio, custom-logo, custom-menu, featured-images, threaded-comments, translation-ready, block-styles, wide-blocks
+
+Allianz & Co is distributed under the terms of the GNU GPL v2 or later.
+*/
+
+/* This file is mostly metadata — actual styles live in /assets/css/main.css */

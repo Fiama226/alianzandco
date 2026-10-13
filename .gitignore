@@ -1,0 +1,27 @@
+.DS_Store
+node_modules/
+.vscode/
+.idea/
+
+# WordPress runtime
+wordpress/wp-content/plugins/
+wordpress/wp-content/themes/
+wordpress/wp-content/uploads/
+wordpress/wp-content/upgrade/
+wordpress/wp-content/debug.log
+wordpress/wp-content/backup-db/
+wordpress/wp-content/cache/
+wordpress/wp-content/w3tc-config/
+wordpress/wp-content/wflogs/
+wordpress/wp-content/ewww/
+wordpress/wp-content/ai1wm-backups/
+wordpress/.htaccess
+wordpress/wp-config.php
+
+# Docker
+docker/db/
+docker-config/
+
+# Editor
+*.swp
+*~

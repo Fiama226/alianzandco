@@ -1,0 +1,80 @@
+# Docker Compose for the Allianz & Co WordPress theme (bilingual FR/EN)
+#
+# Usage:
+#   docker compose up -d
+#   open http://localhost:8080
+#
+# On first boot, the entrypoint script:
+#   1. waits for MariaDB
+#   2. installs WP-CLI
+#   3. auto-installs WordPress
+#   4. downloads + installs the TranslatePress plugin (FR/EN bilingual)
+#   5. activates the Allianz & Co theme (triggers content seeding)
+#   6. sets pretty permalinks
+#   7. configures TranslatePress (EN default, FR as second language)
+#   8. hands over to Apache
+# Subsequent boots are a no-op.
+
+services:
+  db:
+    image: mariadb:11
+    container_name: alianzandco_db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wp
+      MARIADB_PASSWORD: wp
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  wordpress:
+    image: wordpress:6-php8.3-apache
+    container_name: alianzandco_wp
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: "1"
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME',    'http://localhost:8080');
+        define('WP_SITEURL', 'http://localhost:8080');
+        define('FS_METHOD', 'direct');
+    volumes:
+      - wp_data:/var/www/html
+      # Mount the theme directly so live edits are reflected
+      - ./wordpress-theme/allianzandco:/var/www/html/wp-content/themes/allianzandco:ro
+      - ./docker/wordpress/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:ro
+      - ./docker/wordpress/entrypoint.sh:/usr/local/bin/al-entrypoint.sh:ro
+    entrypoint: ["/bin/sh", "/usr/local/bin/al-entrypoint.sh"]
+    command: ["apache2-foreground"]
+
+  # Optional: phpMyAdmin for inspecting the database
+  pma:
+    image: phpmyadmin:latest
+    container_name: alianzandco_pma
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: "1"
+
+volumes:
+  db_data:
+  wp_data:
